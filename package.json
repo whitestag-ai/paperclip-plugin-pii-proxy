@@ -1,0 +1,28 @@
+{
+  "name": "@whitestag-ai/paperclip-plugin-pii-proxy",
+  "version": "0.1.0",
+  "description": "Paperclip plugin exposing pii-proxy as a gate for external LLM calls",
+  "keywords": ["paperclip", "plugin", "pii-proxy", "gdpr"],
+  "type": "module",
+  "main": "./dist/worker.js",
+  "files": ["dist", "manifest.json"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@whitestag-ai/pii-proxy-core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@paperclipai/plugin-sdk": "^1.0.0",
+    "@types/node": "^25.6.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whitestag-ai/paperclip-plugin-pii-proxy.git"
+  },
+  "license": "Apache-2.0",
+  "author": "WHITESTAG.AI <whitestagvr@gmail.com>"
+}
