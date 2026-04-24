@@ -17,6 +17,7 @@ interface InstanceConfig {
   defaultMode?: DefaultMode;
   providers?: string[];
   healthCheckTimeoutMs?: number;
+  failClosedOnUnreachable?: boolean;
 }
 
 function normalizeConfig(raw: unknown): PluginConfig {
@@ -30,6 +31,7 @@ function normalizeConfig(raw: unknown): PluginConfig {
       typeof cfg.healthCheckTimeoutMs === "number" && cfg.healthCheckTimeoutMs > 0
         ? cfg.healthCheckTimeoutMs
         : 2000,
+    failClosedOnUnreachable: cfg.failClosedOnUnreachable === true,
   };
 }
 

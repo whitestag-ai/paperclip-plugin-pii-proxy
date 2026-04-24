@@ -151,6 +151,46 @@ describe("handleBeforeAdapterExecute", () => {
     expect(logged.some((l) => l.level === "warn" && /unreachable/.test(l.message))).toBe(true);
   });
 
+  it("blocks on unreachable in default-on when failClosedOnUnreachable=true", async () => {
+    const fetchFn = unreachableFetch();
+    const logged: Array<{ level: string; message: string }> = [];
+    const result = await handleBeforeAdapterExecute(
+      mkInput(),
+      mkConfig({ defaultMode: "default-on", failClosedOnUnreachable: true }),
+      {
+        fetchFn,
+        log: (level, message) => logged.push({ level, message }),
+      },
+    );
+    expect(result.block).toBeDefined();
+    expect(result.block!.reason).toBe("pii_proxy_unreachable");
+    expect(result.block!.message).toMatch(/fail-closed/);
+    expect(result.env).toBeUndefined();
+    expect(logged.some((l) => l.level === "error" && /fail-closed.*blocking/.test(l.message))).toBe(true);
+  });
+
+  it("failClosedOnUnreachable is a no-op when DPO is reachable (still injects env)", async () => {
+    const fetchFn = healthyFetch();
+    const result = await handleBeforeAdapterExecute(
+      mkInput(),
+      mkConfig({ defaultMode: "default-on", failClosedOnUnreachable: true }),
+      { fetchFn },
+    );
+    expect(result.block).toBeUndefined();
+    expect(result.env).toEqual({ ANTHROPIC_BASE_URL: "http://localhost:4711/anthropic" });
+  });
+
+  it("failClosedOnUnreachable does NOT affect default-off (still no-op when disabled)", async () => {
+    const fetchFn = vi.fn();
+    const result = await handleBeforeAdapterExecute(
+      mkInput(),
+      mkConfig({ defaultMode: "default-off", failClosedOnUnreachable: true }),
+      { fetchFn: fetchFn as unknown as typeof fetch },
+    );
+    expect(result).toEqual({});
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
   it("ignores disabled providers in the config", async () => {
     const fetchFn = vi.fn();
     const result = await handleBeforeAdapterExecute(

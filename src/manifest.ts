@@ -78,6 +78,13 @@ const manifest: PaperclipPluginManifestV1 = {
         description:
           "How long to wait for the pii-proxy /health endpoint to respond before treating it as unreachable. Short timeout keeps heartbeats responsive; raise if you run the pii-proxy on a slow network.",
       },
+      failClosedOnUnreachable: {
+        type: "boolean",
+        title: "Fail-Closed on Unreachable (default-on mode)",
+        default: false,
+        description:
+          "When enabled, 'default-on' mode behaves like 'required' on pii-proxy outages — the run is blocked instead of falling back to a direct-to-provider call with plaintext PII. Leave off to keep legacy fall-open behavior; turn on when default-on is actually a security control. ('required' mode is always fail-closed regardless of this flag.)",
+      },
     },
   },
 };

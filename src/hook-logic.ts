@@ -18,6 +18,20 @@ export interface PluginConfig {
   defaultMode: DefaultMode;
   providers: readonly string[];
   healthCheckTimeoutMs: number;
+  /**
+   * When true, a run whose effective mode is `enabled` (i.e. resolved from
+   * `default-on` without explicit opt-out) is **blocked** if the DPO is
+   * unreachable, instead of falling open to a direct-to-provider call.
+   *
+   * Default: false — preserves the legacy `default-on` semantics where
+   * unreachable DPO silently disables proxying for the run. Turn this on
+   * when the `default-on` policy is actually a security control you rely
+   * on, to close the "DPO down → PII egress in plaintext" gap.
+   *
+   * `required` mode is always fail-closed regardless of this flag.
+   * `default-off` is unaffected (no proxy injected either way).
+   */
+  failClosedOnUnreachable?: boolean;
 }
 
 export interface HookInput {
@@ -85,16 +99,21 @@ export async function handleBeforeAdapterExecute(
   });
 
   if (!reachability.reachable) {
-    if (effective === "required") {
-      log("error", "pii-proxy unreachable under required mode — blocking run", {
+    const shouldBlock =
+      effective === "required" ||
+      (effective === "enabled" && config.failClosedOnUnreachable === true);
+    if (shouldBlock) {
+      const policyLabel = effective === "required" ? "required-mode" : "fail-closed";
+      log("error", `pii-proxy unreachable under ${policyLabel} policy — blocking run`, {
         agentId: input.agentId,
         runId: input.runId,
         reason: reachability.reason,
+        mode: effective,
       });
       return {
         block: {
           reason: "pii_proxy_unreachable",
-          message: `pii-proxy at ${config.dpoUrl} unreachable (${reachability.reason}) — run blocked per required-mode policy`,
+          message: `pii-proxy at ${config.dpoUrl} unreachable (${reachability.reason}) — run blocked per ${policyLabel} policy`,
         },
       };
     }
