@@ -1,28 +1,46 @@
 {
-  "name": "@whitestag-ai/paperclip-plugin-pii-proxy",
+  "name": "@whitestag/paperclip-plugin-pii-proxy",
   "version": "0.1.0",
-  "description": "Paperclip plugin exposing pii-proxy as a gate for external LLM calls",
-  "keywords": ["paperclip", "plugin", "pii-proxy", "gdpr"],
+  "description": "Paperclip plugin that routes external LLM calls through a pii-proxy for GDPR-compliant anonymisation",
+  "keywords": [
+    "paperclip",
+    "plugin",
+    "pii-proxy",
+    "gdpr",
+    "anonymisation",
+    "llm"
+  ],
   "type": "module",
   "main": "./dist/worker.js",
-  "files": ["dist", "manifest.json"],
+  "files": [
+    "dist",
+    "manifest.json",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run"
+    "build": "tsc && node scripts/emit-manifest.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm build && pnpm test"
   },
-  "dependencies": {
-    "@whitestag-ai/pii-proxy-core": "^0.1.0"
+  "peerDependencies": {
+    "@paperclipai/plugin-sdk": "^2026.416.0"
   },
   "devDependencies": {
-    "@paperclipai/plugin-sdk": "^1.0.0",
-    "@types/node": "^25.6.0",
+    "@paperclipai/plugin-sdk": "link:../../Paperclip/.claude/worktrees/paperclip-dpo-m0-hook/packages/plugins/sdk",
+    "@types/node": "^22.0.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/whitestag-ai/paperclip-plugin-pii-proxy.git"
+    "url": "git+https://github.com/whitestag-ai/paperclip-plugin-pii-proxy.git"
   },
   "license": "Apache-2.0",
-  "author": "WHITESTAG.AI <whitestagvr@gmail.com>"
+  "author": "WHITESTAG.AI <whitestagvr@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/whitestag-ai/paperclip-plugin-pii-proxy/issues"
+  },
+  "homepage": "https://github.com/whitestag-ai/paperclip-plugin-pii-proxy#readme"
 }
