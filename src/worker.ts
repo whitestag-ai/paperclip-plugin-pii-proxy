@@ -26,7 +26,9 @@ function normalizeConfig(raw: unknown): PluginConfig {
     dpoUrl: cfg.dpoUrl ?? "http://localhost:4711",
     sharedKey: cfg.sharedKey,
     defaultMode: (cfg.defaultMode ?? "default-off") as DefaultMode,
-    providers: Array.isArray(cfg.providers) && cfg.providers.length > 0 ? cfg.providers : ["anthropic"],
+    providers: Array.isArray(cfg.providers) && cfg.providers.length > 0
+      ? cfg.providers
+      : ["anthropic", "openai"],
     healthCheckTimeoutMs:
       typeof cfg.healthCheckTimeoutMs === "number" && cfg.healthCheckTimeoutMs > 0
         ? cfg.healthCheckTimeoutMs

@@ -23,8 +23,15 @@ const DEFAULT_MAP: Record<string, AdapterProviderMapping> = {
     path: "/anthropic",
     provider: "anthropic",
   },
-  // Phase 2 — OpenAI:
-  // codex_local: { envVar: "OPENAI_BASE_URL", path: "/openai/v1", provider: "openai" },
+  codex_local: {
+    // Codex CLI honours OPENAI_BASE_URL like the openai-node SDK.
+    // Path points at the proxy's chat-completions passthrough; the CLI then
+    // appends `/chat/completions` itself. The proxy listens on /openai/v1
+    // exactly to support that "BASE_URL ends at /v1" SDK convention.
+    envVar: "OPENAI_BASE_URL",
+    path: "/openai/v1",
+    provider: "openai",
+  },
 };
 
 export function resolveAdapterProviderMapping(
