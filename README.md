@@ -6,6 +6,8 @@ Paperclip plugin that routes external LLM calls through a local [pii-proxy](http
 
 **Status:** `0.1.x` — Anthropic (via `claude_local` adapter) is the first supported provider. OpenAI (Codex-CLI) follows in `0.2.x`.
 
+> ⚠️ **Host compatibility (read before installing).** This plugin uses Paperclip's `onBeforeAdapterExecute` plugin hook, which is part of the M0 host work and is **not yet merged into upstream `paperclipai/paperclip`**. Until that lands and a new `@paperclipai/plugin-sdk` is published, the plugin will install and load on any standard Paperclip — but the host will silently skip the hook, leaving the agent unprotected. Use this plugin today only with a Paperclip build that includes the hook (Whitestag fork on `feat/lmstudio-dynamic-models`, or any future upstream release that documents `onBeforeAdapterExecute`). An upstream proposal/discussion is being prepared; this notice will be removed once the hook is generally available.
+
 ## How it works
 
 Paperclip's `claude_local` adapter spawns the Claude Code CLI as a subprocess. The CLI honours `ANTHROPIC_BASE_URL` for its API target. This plugin uses Paperclip's `onBeforeAdapterExecute` hook to set that env var to your local pii-proxy's Anthropic passthrough — so the agent, the CLI, and the upstream API all keep working unchanged, while every byte of prompt text is pseudonymised at the proxy before egress.
