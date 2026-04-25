@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    name: build + test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: Verify manifest.json was emitted
+        run: |
+          test -f manifest.json || { echo "manifest.json missing"; exit 1; }
+          node -e "const m = require('./manifest.json'); if (!m.id) { console.error('manifest has no id'); process.exit(1); } console.log('manifest OK:', m.id, 'v' + m.version);"
