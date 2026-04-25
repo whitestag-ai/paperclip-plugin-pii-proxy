@@ -65,11 +65,11 @@ const manifest: PaperclipPluginManifestV1 = {
         title: "Enabled Providers",
         items: {
           type: "string",
-          enum: ["anthropic"],
+          enum: ["anthropic", "openai"],
         },
-        default: ["anthropic"],
+        default: ["anthropic", "openai"],
         description:
-          "Which upstream providers to intercept. More providers (openai, gemini, ...) will be added in future pii-proxy releases.",
+          "Which upstream providers to intercept. 'anthropic' covers the claude_local adapter (Claude CLI / Anthropic SDK). 'openai' covers the codex_local adapter (OpenAI Codex CLI / openai-node / openai-python). Other providers (gemini, …) follow in future pii-proxy releases.",
       },
       healthCheckTimeoutMs: {
         type: "number",

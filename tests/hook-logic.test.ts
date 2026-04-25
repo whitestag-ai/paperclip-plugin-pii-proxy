@@ -22,7 +22,7 @@ function mkConfig(overrides: Partial<PluginConfig> = {}): PluginConfig {
   return {
     dpoUrl: "http://localhost:4711",
     defaultMode: "default-on",
-    providers: ["anthropic"],
+    providers: ["anthropic", "openai"],
     healthCheckTimeoutMs: 100,
     ...overrides,
   };
@@ -75,6 +75,30 @@ describe("handleBeforeAdapterExecute", () => {
       ANTHROPIC_BASE_URL: "http://localhost:4711/anthropic",
     });
     expect(result.block).toBeUndefined();
+  });
+
+  it("injects OPENAI_BASE_URL for codex_local in default-on mode", async () => {
+    const fetchFn = healthyFetch();
+    const result = await handleBeforeAdapterExecute(
+      mkInput({ adapterType: "codex_local" }),
+      mkConfig({ defaultMode: "default-on" }),
+      { fetchFn },
+    );
+    expect(result.env).toEqual({
+      OPENAI_BASE_URL: "http://localhost:4711/openai/v1",
+    });
+    expect(result.block).toBeUndefined();
+  });
+
+  it("skips codex_local when only 'anthropic' is in the providers list", async () => {
+    const fetchFn = vi.fn();
+    const result = await handleBeforeAdapterExecute(
+      mkInput({ adapterType: "codex_local" }),
+      mkConfig({ providers: ["anthropic"], defaultMode: "default-on" }),
+      { fetchFn: fetchFn as unknown as typeof fetch },
+    );
+    expect(result).toEqual({});
+    expect(fetchFn).not.toHaveBeenCalled();
   });
 
   it("skips injection in default-off mode (no per-agent override)", async () => {
