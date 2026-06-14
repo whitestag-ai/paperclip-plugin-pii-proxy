@@ -1,9 +1,9 @@
 {
   "id": "whitestag.pii-proxy",
   "apiVersion": 1,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "PII-Proxy Gate",
-  "description": "GDPR-compliant anonymisation gate for agent LLM calls. Routes Anthropic (and soon OpenAI) traffic through a local pii-proxy so names, emails, bank details, and trade secrets never leave the continent in plaintext.",
+  "description": "GDPR-compliant anonymisation gate for agent LLM calls. Routes Anthropic and OpenAI traffic through a local pii-proxy so names, emails, bank details, and trade secrets never leave the continent in plaintext.",
   "author": "WHITESTAG.AI",
   "categories": [
     "workspace"

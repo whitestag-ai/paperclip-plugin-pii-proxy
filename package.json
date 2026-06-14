@@ -1,6 +1,6 @@
 {
   "name": "@whitestag/paperclip-plugin-pii-proxy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "packageManager": "pnpm@9.15.4",
   "description": "Paperclip plugin that routes external LLM calls through a pii-proxy for GDPR-compliant anonymisation",
   "keywords": [

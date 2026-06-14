@@ -1,5 +1,26 @@
 # @whitestag/paperclip-plugin-pii-proxy
 
+## 0.2.0
+
+OpenAI support and an opt-in fail-closed mode for `default-on`.
+
+### Features
+
+- **OpenAI / `codex_local` provider.** The `providers` config now accepts
+  `openai` alongside `anthropic`. The `codex_local` adapter (OpenAI Codex CLI /
+  `openai-node` / `openai-python`) gets routed through the pii-proxy's
+  `/openai/v1/chat/completions` passthrough, the same way `claude_local` is
+  routed for Anthropic.
+- **`failClosedOnUnreachable` option.** When enabled, `default-on` mode behaves
+  like `required` on a pii-proxy outage — the run is blocked instead of falling
+  back to a direct-to-provider call with plaintext PII. Defaults to `false`
+  (legacy fail-open). `required` mode remains always fail-closed.
+
+### Docs
+
+- README notes cross-platform support; manifest description updated to reflect
+  shipped OpenAI support.
+
 ## 0.1.0
 
 Initial release. Anthropic-only, non-UI, host-side routing plugin.
